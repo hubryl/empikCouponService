@@ -1,0 +1,63 @@
+{
+  "info": {
+    "_postman_id": "8eb99c51-74cd-463b-a2da-622b9cedd4dc",
+    "name": "CouponService",
+    "description": "For local usage you could use:\n\n<u><i>appUrl</i></u> : [http://localhost:8080](http://localhost:8080)  \n<u><i>apiAddress </i></u> : /api/v1/coupon\n\nIt is adviced to create separate environments to be able to test it everywhere",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40295700"
+  },
+  "item": [
+    {
+      "name": "Create coupon",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\t\"code\": \"ZiMA\",\r\n\t\"maxUsages\" : 100,\r\n\t\"country\" : \"PL\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{appUrl}}{{apiAddress}}/create",
+          "host": [
+            "{{appUrl}}{{apiAddress}}"
+          ],
+          "path": [
+            "create"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Use Coupon",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\t\"code\": \"Zima\",\r\n\t\"userId\" : \"Janusz\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{appUrl}}{{apiAddress}}/use",
+          "host": [
+            "{{appUrl}}{{apiAddress}}"
+          ],
+          "path": [
+            "use"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
