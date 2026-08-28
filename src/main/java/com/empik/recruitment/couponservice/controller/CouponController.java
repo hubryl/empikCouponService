@@ -39,7 +39,7 @@ public class CouponController {
             )
     ))
     public CouponDTO addCoupon(@Valid @RequestBody CouponDTO couponDTO) {
-        log.info("Creating coupon with code: {}", couponDTO.getCode());
+        log.debug("Creating coupon with code: {}", couponDTO.getCode());
         couponService.addCoupon(couponDTO);
         return couponDTO;
     }
@@ -55,7 +55,7 @@ public class CouponController {
     ))
     public ResponseEntity<CouponUseageEnum> useCoupon(@Valid @RequestBody CouponUsageDTO couponUsageDTO,
                                                       HttpServletRequest request) {
-        log.info("Using coupon with code [{}] for user [{}]", couponUsageDTO.getCode(), couponUsageDTO.getUserId());
+        log.debug("Using coupon with code [{}] for user [{}] ip: [{}]", couponUsageDTO.getCode(), couponUsageDTO.getUserId(), request.getRemoteAddr());
         final var result = couponService.useCoupon(
                 couponUsageDTO.getCode(),
                 couponUsageDTO.getUserId(),

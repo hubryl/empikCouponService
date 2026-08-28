@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: coupon-service
+  name: empikcouponservice
   labels:
-    app: coupon-service
+    app: empikcouponservice
 spec:
   replicas: 2 # Initial number of pods before HPA takes over
   selector:
     matchLabels:
-      app: coupon-service
+      app: empikcouponservice
   template:
     metadata:
       labels:
-        app: coupon-service
+        app: empikcouponservice
     spec:
       containers:
-        - name: coupon-service-container
-          image: coupon-service:latest # Replace with your actual Docker image registry path
+        - name: empikcouponservice-container
+          image: hubertbrylinski/empikcouponservice:latest # Replace with your actual Docker image registry path
           ports:
             - containerPort: 8080 # The port your application listens on inside the container
 
@@ -33,10 +33,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: coupon-service-service
+  name: empikcouponservice-service
 spec:
   selector:
-    app: coupon-service # Links the service to the deployment pods
+    app: empikcouponservice # Links the service to the deployment pods
   ports:
     - protocol: TCP
       port: 80         # The port exposed inside the cluster
@@ -47,12 +47,12 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: coupon-service-hpa
+  name: empikcouponservice-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: coupon-service # Must exactly match the Deployment name above
+    name: empikcouponservice # Must exactly match the Deployment name above
   minReplicas: 2
   maxReplicas: 10
   metrics:
