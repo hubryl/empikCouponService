@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: empikcouponservice
+  labels:
+    app: empikcouponservice
+spec:
+  replicas: 2 # Initial number of pods before HPA takes over
+  selector:
+    matchLabels:
+      app: empikcouponservice
+  template:
+    metadata:
+      labels:
+        app: empikcouponservice
+    spec:
+      containers:
+        - name: empikcouponservice-container
+          image: hubertbrylinski/empikcouponservice:latest # Replace with your actual Docker image registry path
+          ports:
+            - containerPort: 8080 # The port your application listens on inside the container
+
+          # CRITICAL: HPA requires resource requests to calculate scaling math
+          resources:
+            requests:
+              cpu: "200m"      # 0.2 cores (Baseline required by HPA)
+              memory: "256Mi"  # 256 Megabytes
+            limits:
+              cpu: "500m"      # Hard ceiling for a single pod
+              memory: "512Mi"  # Hard ceiling for a single pod
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: empikcouponservice-service
+spec:
+  selector:
+    app: empikcouponservice # Links the service to the deployment pods
+  ports:
+    - protocol: TCP
+      port: 80         # The port exposed inside the cluster
+      targetPort: 8080 # The port on the container where traffic is sent
+  type: ClusterIP      # Internal cluster communication only
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: empikcouponservice-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: empikcouponservice # Must exactly match the Deployment name above
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70 # Scales up if average CPU usage goes over 140m (70% of 200m request)
